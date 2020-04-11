@@ -6,24 +6,28 @@ using System.Threading.Tasks;
 
 namespace FitApp.DL.Model
 {
-     class Gender
-     {
+     [Serializable]
+       public class Gender
+       {
        protected string GenderName { get; set; }
-
         
-     }
-
-    class Male : Gender
+       
+       
+       }
+    
+    [Serializable]
+    public class Male : Gender
     {
-        Male()
+        public Male()
         {
             GenderName = "Male";
         }
     }
 
-    class Female : Gender
+    [Serializable]
+    public class Female : Gender
     {
-        Female()
+        public Female()
         {
             GenderName = "Female";
         }

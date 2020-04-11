@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace FitApp.DL.Model
 {
-    class User
+    [Serializable]
+    public class User
     {
         public string Name { get; }
         public Gender Gender { get; }
@@ -14,6 +15,7 @@ namespace FitApp.DL.Model
         public double Weight { get; set; }
         public double Height { get; set; }
 
+        
         public User (
             string name,
             Gender gender,
@@ -33,7 +35,7 @@ namespace FitApp.DL.Model
                 throw new ArgumentNullException(("Пол не корректен"), nameof(name));
             }
 
-            if (birthDate > DateTime.Parse("01.01.1900") || birthDate < DateTime.Now)
+            if (birthDate < DateTime.Parse("01.01.1900") || birthDate > DateTime.Now)
             {
                 throw new ArgumentNullException(("Дата рождения не корретна"), nameof(name));
             }
