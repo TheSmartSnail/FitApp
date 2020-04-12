@@ -13,20 +13,94 @@ namespace FitApp.CMD
             Console.WriteLine("Name");
             string name = Console.ReadLine();
 
-            Console.WriteLine("Gender");
-            Gender gender = GenderController.GetGender(Console.ReadLine());
+            UserController userController = new UserController(name);
+            if (userController.IsNewUser)
+            {
+                Gender gender;
+                DateTime birthDate;
+                double weight;
+                double height;
 
-            Console.WriteLine("Birth Date");
-            DateTime birthDate = DateTime.Parse(Console.ReadLine());
+                //Определение пола
+                Console.WriteLine("Введите пол");
+                gender = GetGender();
 
-            Console.WriteLine("Weigth");
-            double weight = Convert.ToDouble(Console.ReadLine());
+               // Определение даты
+                birthDate = GetDate();
 
-            Console.WriteLine("Height");
-            double height = Convert.ToDouble(Console.ReadLine());
+                Console.WriteLine("Введите вес");
+                weight = DoubleParse(Console.ReadLine());
 
-            var userController = new UserController(name, gender, birthDate, weight, height);
-            userController.Save();
+                Console.WriteLine("Введите рост");
+                height = DoubleParse(Console.ReadLine());
+
+                userController.SetNewUserData(gender, birthDate, weight, height);
+            }
+
+
+
+            Console.WriteLine(userController.CurrentUser);
+        }
+
+        private static DateTime GetDate()
+        {
+            DateTime birthDate;
+            while (true)
+            {
+                Console.WriteLine("Введите дату рождения в формате дд.мм.гггг");
+
+                if (DateTime.TryParse(Console.ReadLine(), out birthDate))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Дата некорректна");
+                }
+            }
+
+            return birthDate;
+        }
+
+
+        private static double DoubleParse(string numberString)
+        {
+            double number;
+            while (true)
+            {
+                if (double.TryParse(numberString, out number))
+                {
+
+                    return number;
+                }
+                else
+                {
+                    Console.WriteLine("Дата некорректна");
+                }
+            }
+        }
+
+
+        static private Gender GetGender()
+        {
+            string genderName;
+            
+            while (true)
+            {
+                genderName = Console.ReadLine();
+                switch (genderName)
+                {
+                    case "Male": return new Male();
+
+                    case "Female": return new Female();
+
+                    default:
+                        {
+                            Console.WriteLine("Произошла ошибка в выборе пола");
+                        }
+                        break;
+                }
+            }
         }
     }
 }

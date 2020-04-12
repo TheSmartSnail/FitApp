@@ -11,22 +11,77 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace FitApp.DL.Controller
-{   
+{
     /// <summary>
     /// Контроллер пользователя
     /// </summary>
     public class UserController
     {
-        public User User { get; }
+        public List<User> Users{get;}
 
-        public UserController(string userName, Gender gender, DateTime birthDate, double weight, double height)
+        public User CurrentUser { get; }
+        public bool IsNewUser { get; } = false;
+
+        public UserController(string userName)
         {
-            gender = new Male();
-            User user = new User(userName, gender, birthDate, weight, height);
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentException("Ошибка в инициализации имени", nameof(userName));
+            }
 
-            User = user ?? throw new ArgumentNullException("Ошибка в инициализации пользователя",nameof(user));
+            Users = new List<User>();
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
+            {
+                if (formatter.Deserialize(fs) is List<User> users)
+                {
+                    Users = users;
+                }
+            }
+
+            CurrentUser = Users.SingleOrDefault(u => u.Name == userName);
+
+            if (CurrentUser == null)
+            {
+                CurrentUser = new User(userName);
+                Users.Add(CurrentUser);
+                IsNewUser = true;
+                Save();
+            }
+
+            
         }
-        
+
+
+        private List<User> GetUserData()
+        {
+            var formatter = new BinaryFormatter();
+
+            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
+            {
+                if (formatter.Deserialize(fs) is List<User> users)
+                {
+                    return users;
+                }
+
+                else
+                {
+                    return new List<User>();
+                }
+                
+            }
+        }
+
+        public void SetNewUserData(Gender gender, DateTime birthDate, double weight=1, double height=1)
+        {
+            CurrentUser.Gender = gender;
+            CurrentUser.BirthDate = birthDate;
+            CurrentUser.Weight = weight;
+            CurrentUser.Height = height;
+
+        }
+
         /// <summary>
         /// Сохранение данных пользователя
         /// </summary>
@@ -36,22 +91,11 @@ namespace FitApp.DL.Controller
             
             using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
             {
-                formatter.Serialize(fs, User);
+                formatter.Serialize(fs, Users);
             }
         }
 
-        public UserController()
-        {
-            var formatter = new BinaryFormatter();
-            
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                if(formatter.Deserialize(fs) is User user)
-                {
-                    User = user;
-                } 
-            }
-        }
+        
 
     }
 }

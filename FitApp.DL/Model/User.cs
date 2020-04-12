@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FitApp.DL.Other;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,11 +10,13 @@ namespace FitApp.DL.Model
     [Serializable]
     public class User
     {
-        public string Name { get; }
-        public Gender Gender { get; }
-        public DateTime BirthDate { get; }
+        public string Name { get; set; }
+        public Gender Gender { get; set; }
+        public DateTime BirthDate { get; set; }
         public double Weight { get; set; }
         public double Height { get; set; }
+        public int Age { get {return GetAge.GetCurrentAge(BirthDate); } }
+        
 
         
         public User (
@@ -57,5 +60,18 @@ namespace FitApp.DL.Model
             Height = height;
             Weight = weght;
         }
+
+        public User(string name)
+        {
+            Name = name;
+        }
+
+        public override string ToString()
+        {
+            return $"{Name} {Age}";
+        }
+
     }
+
+    
 }

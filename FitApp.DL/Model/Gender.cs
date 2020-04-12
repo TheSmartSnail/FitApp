@@ -10,9 +10,6 @@ namespace FitApp.DL.Model
        public class Gender
        {
        protected string GenderName { get; set; }
-        
-       
-       
        }
     
     [Serializable]
