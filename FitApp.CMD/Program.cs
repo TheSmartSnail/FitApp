@@ -23,7 +23,7 @@ namespace FitApp.CMD
 
                 //Определение пола
                 Console.WriteLine("Введите пол");
-                gender = GetGender();
+                gender = GenderController.GetGender();
 
                // Определение даты
                 birthDate = GetDate();
@@ -81,26 +81,6 @@ namespace FitApp.CMD
         }
 
 
-        static private Gender GetGender()
-        {
-            string genderName;
-            
-            while (true)
-            {
-                genderName = Console.ReadLine();
-                switch (genderName)
-                {
-                    case "Male": return new Male();
-
-                    case "Female": return new Female();
-
-                    default:
-                        {
-                            Console.WriteLine("Произошла ошибка в выборе пола");
-                        }
-                        break;
-                }
-            }
-        }
+        
     }
 }
