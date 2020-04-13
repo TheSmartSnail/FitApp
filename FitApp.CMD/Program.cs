@@ -12,8 +12,10 @@ namespace FitApp.CMD
             Console.WriteLine("Вас приветствует приложение FitApp");
             Console.WriteLine("Name");
             string name = Console.ReadLine();
+            
 
             UserController userController = new UserController(name);
+            var eatingController = new EatingController(userController.CurrentUser);
             if (userController.IsNewUser)
             {
                 Gender gender;
@@ -28,18 +30,30 @@ namespace FitApp.CMD
                // Определение даты
                 birthDate = GetDate();
 
-                Console.WriteLine("Введите вес");
-                weight = DoubleParse(Console.ReadLine());
+                weight = DoubleParse("Вес");
 
-                Console.WriteLine("Введите рост");
-                height = DoubleParse(Console.ReadLine());
+                height = DoubleParse("Рост");
 
                 userController.SetNewUserData(gender, birthDate, weight, height);
             }
 
-
-
             Console.WriteLine(userController.CurrentUser);
+
+
+            Console.WriteLine("Что вы хотите сделать?");
+            Console.WriteLine("E - ввести прием пищи");
+            var key = Console.ReadKey();
+            Console.WriteLine();
+
+            if (key.Key == ConsoleKey.E){
+                var foods = EnterEating();
+                eatingController.Add(foods.Food, foods.Weight);
+
+                foreach(var item in eatingController.Eating.Foods)
+                {
+                    Console.WriteLine($"/t{item.Key} - {item.Value}");
+                }
+            }
         }
 
         private static DateTime GetDate()
@@ -65,22 +79,36 @@ namespace FitApp.CMD
 
         private static double DoubleParse(string numberString)
         {
+            Console.WriteLine(numberString);
             double number;
             while (true)
             {
-                if (double.TryParse(numberString, out number))
+                if (double.TryParse(Console.ReadLine(), out number))
                 {
 
                     return number;
                 }
                 else
                 {
-                    Console.WriteLine("Дата некорректна");
+                    Console.WriteLine("Некорректное число");
                 }
             }
         }
 
 
-        
+        private static (Food Food,double Weight) EnterEating()
+        {
+            Console.WriteLine("Введите имя продукта");
+            var food = Console.ReadLine();
+            double calories = DoubleParse("Калории");
+            double prot = DoubleParse("Белка");
+            double fats = DoubleParse("Жиры");
+            double hydr = DoubleParse("Углеводы");
+            
+            double weight = DoubleParse("Введите вес порции");
+            
+
+            return (Food: new Food(food,calories,prot,fats,hydr), Weight: weight);
+        }
     }
 }

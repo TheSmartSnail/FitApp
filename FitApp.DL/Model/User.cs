@@ -10,11 +10,29 @@ namespace FitApp.DL.Model
     [Serializable]
     public class User
     {
+        /// <summary>
+        /// Имя
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Пол
+        /// </summary>
         public Gender Gender { get; set; }
+        /// <summary>
+        /// Дата рождения
+        /// </summary>
         public DateTime BirthDate { get; set; }
+        /// <summary>
+        /// Вес
+        /// </summary>
         public double Weight { get; set; }
+        /// <summary>
+        /// Рост
+        /// </summary>
         public double Height { get; set; }
+        /// <summary>
+        /// Возраст
+        /// </summary>
         public int Age { get {return GetAge.GetCurrentAge(BirthDate); } }
         
 

@@ -15,12 +15,16 @@ namespace FitApp.DL.Controller
     /// <summary>
     /// Контроллер пользователя
     /// </summary>
-    public class UserController
+    [Serializable]
+    public class UserController:ControllerBase
     {
+        private const string USER_FILE_NAME = "users.dat";
         public List<User> Users{get;}
-
+        
         public User CurrentUser { get; }
+        
         public bool IsNewUser { get; } = false;
+
 
         public UserController(string userName)
         {
@@ -28,18 +32,12 @@ namespace FitApp.DL.Controller
             {
                 throw new ArgumentException("Ошибка в инициализации имени", nameof(userName));
             }
+            //Считывание списка пользователей из файлы users.dat
+            Users = GetUserData();
 
-            Users = new List<User>();
-            BinaryFormatter formatter = new BinaryFormatter();
 
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                if (fs.Length>0 && formatter.Deserialize(fs) is List<User> users)
-                {
-                    Users = users;
-                }
-            }
-
+            //Проверка на наличие текущего пользователя в списке пользователей 
+            //и его последующие занасение в него
             CurrentUser = Users.SingleOrDefault(u => u.Name == userName);
 
             if (CurrentUser == null)
@@ -49,30 +47,25 @@ namespace FitApp.DL.Controller
                 IsNewUser = true;
                 Save();
             }
-
-            
         }
 
-
+        /// <summary>
+        /// Получение списка пользователей
+        /// </summary>
+        /// <returns></returns>
         private List<User> GetUserData()
         {
-            var formatter = new BinaryFormatter();
+            return Load<List<User>>(USER_FILE_NAME) ?? new List<User>();
 
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                if (formatter.Deserialize(fs) is List<User> users)
-                {
-                    return users;
-                }
-
-                else
-                {
-                    return new List<User>();
-                }
-                
-            }
         }
-
+        
+        /// <summary>
+        /// Установка данных для новыйх пользователей
+        /// </summary>
+        /// <param name="gender"></param>
+        /// <param name="birthDate"></param>
+        /// <param name="weight"></param>
+        /// <param name="height"></param>
         public void SetNewUserData(Gender gender, DateTime birthDate, double weight=1, double height=1)
         {
             CurrentUser.Gender = gender;
@@ -87,12 +80,8 @@ namespace FitApp.DL.Controller
         /// </summary>
         public void Save()
         {
-            var formatter = new BinaryFormatter();
+            Save(USER_FILE_NAME, Users);
             
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, Users);
-            }
         }
 
         
