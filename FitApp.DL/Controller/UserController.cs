@@ -72,6 +72,7 @@ namespace FitApp.DL.Controller
             CurrentUser.BirthDate = birthDate;
             CurrentUser.Weight = weight;
             CurrentUser.Height = height;
+            Save();
 
         }
 
